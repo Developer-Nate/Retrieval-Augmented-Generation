@@ -1,0 +1,26 @@
+To install the specified Python libraries (`sentence-transformers`, `transformers`, `pandas`, and `scikit-learn`), you can use the following terminal commands:
+
+```bash
+pip install sentence-transformers transformers pandas scikit-learn
+```
+
+### Explanation:
+- **`pip install`**: This is the command used to install Python packages from the Python Package Index (PyPI).
+- **`sentence-transformers`**: A library for state-of-the-art sentence, text, and image embeddings.
+- **`transformers`**: A library by Hugging Face for natural language processing (NLP) tasks, providing pre-trained models like BERT, GPT, etc.
+- **`pandas`**: A powerful data manipulation and analysis library.
+- **`scikit-learn`**: A library for machine learning, providing tools for data mining and data analysis.
+
+### Additional Notes:
+- If you are using a virtual environment, make sure it is activated before running the command.
+- If you encounter any issues with dependencies, you can try upgrading `pip` first:
+
+  ```bash
+  pip install --upgrade pip
+  ```
+
+- If you are using Python 3 specifically and `pip` is not recognized, you might need to use `pip3` instead:
+
+  ```bash
+  pip3 install sentence-transformers transformers pandas scikit-learn
+  ```

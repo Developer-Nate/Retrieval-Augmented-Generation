@@ -1,46 +1,40 @@
 from sentence_transformers import SentenceTransformer
+import os
 
 
-# Function to read and split the file into chunks
-def read_and_split_file(file_path):
-    """Read the content of a file and split it into chunks by double newlines."""
+def split_into_chunks(file_path):
+    """Read the content of the file and split it into chunks separated by double newlines."""
     with open(file_path, 'r', encoding='utf-8') as file:
-        content = file.read()  # Read the entire file content
-        chunks = content.split('\n\n')  # Split the content by double newlines
-        # Remove any leading/trailing whitespace from each chunk
-        chunks = [chunk.strip() for chunk in chunks if chunk.strip()]
+        content = file.read()
+    chunks = content.split("\n\n")
     return chunks
 
 
-# Function to generate embeddings for text chunks
-def generate_embeddings(text_chunks):
-    """Generate embeddings for a list of text chunks using the SentenceTransformer model."""
-    # Load the pre-trained model
-    model = SentenceTransformer('all-MiniLM-L6-v2')
+def generate_embeddings(chunks):
+    """Generate embeddings for a list of text chunks."""
+    model = SentenceTransformer('all-MiniLM-L6-v2')  # Load the pre-trained model
+    embeddings_dict = {}
 
-    # Generate embeddings for the text chunks
-    embeddings = model.encode(text_chunks, convert_to_tensor=True)
+    # Generate embeddings for each chunk
+    for i, chunk in enumerate(chunks):
+        embedding = model.encode(chunk)  # Get the embedding for the chunk
+        embeddings_dict[i] = {
+            'text': chunk,
+            'embedding': embedding
+        }
 
-    # Store embeddings and associated text in a dictionary
-    embeddings_dict = {
-        "text": text_chunks,
-        "embeddings": embeddings
-    }
     return embeddings_dict
 
 
-# Main script
-if __name__ == "__main__":
-    # Step 1: Read and split the file into chunks
-    file_path = 'Flatland.txt'  # Path to the file
-    text_chunks = read_and_split_file(file_path)
+# Example usage
+file_path = "Flatland.txt"  # Path to your text file
+chunks = split_into_chunks(file_path)
+embeddings_dict = generate_embeddings(chunks)
 
-    # Step 2: Generate embeddings for the text chunks
-    embeddings_dict = generate_embeddings(text_chunks)
-
-    # Step 3: Print the embeddings dictionary for demonstration
-    for i, (text, embedding) in enumerate(zip(embeddings_dict["text"], embeddings_dict["embeddings"])):
-        print(f"Chunk {i + 1}:")
-        print(f"Text: {text}")
-        print(f"Embedding (first 5 values): {embedding[:5]}")  # Print first 5 values for brevity
-        print("-" * 40)
+# Print the embeddings of the first chunk as an example
+first_chunk = embeddings_dict.get(0)
+if first_chunk:
+    print("Text:", first_chunk['text'])
+    print("Embedding:", first_chunk['embedding'][:10])  # Print only the first 10 values of the embedding
+else:
+    print("No content found.")

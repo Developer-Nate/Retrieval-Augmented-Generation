@@ -1,53 +1,39 @@
 import requests
 from bs4 import BeautifulSoup
-import re
+import os
 
-def fetch_webpage_content(url):
-    """Fetch the content of a webpage."""
-    response = requests.get(url)
-    response.raise_for_status()  # Raises an HTTPError for bad responses
-    return response.text
-
-def extract_text_from_html(html_content):
-    """Extract and clean text from HTML content using BeautifulSoup."""
-    soup = BeautifulSoup(html_content, 'html.parser')
-    
-    # Remove script and style elements
-    for script_or_style in soup(['script', 'style']):
-        script_or_style.decompose()
-    
-    # Get text
-    text = soup.get_text()
-    
-    # Clean and normalize whitespace
-    lines = (line.strip() for line in text.splitlines())
-    chunks = (phrase.strip() for line in lines for phrase in line.split("  "))
-    text = ' '.join(chunk for chunk in chunks if chunk)
-    
-    return text
-
-def read_text_file(file_path):
-    """Read and return the content of a text file."""
+def extract_text_from_file(file_path):
+    """Extract text from a plain text file."""
     with open(file_path, 'r', encoding='utf-8') as file:
         return file.read()
 
-def clean_text(text):
-    """Further clean text by removing special characters and extra spaces."""
-    text = re.sub(r'\s+', ' ', text)  # Replace multiple spaces with a single space
-    text = re.sub(r'[^\x00-\x7F]+', ' ', text)  # Remove non-ASCII characters
-    return text.strip()
-
-def get_document_content(source):
-    """Determine if the source is a URL or a file path and fetch content accordingly."""
-    if source.startswith('http://') or source.startswith('https://'):
-        html_content = fetch_webpage_content(source)
-        text = extract_text_from_html(html_content)
+def extract_text_from_webpage(url):
+    """Extract text from a web page using BeautifulSoup."""
+    response = requests.get(url)
+    if response.status_code == 200:
+        soup = BeautifulSoup(response.content, 'html.parser')
+        # Extract text from the body of the page
+        text = soup.get_text(separator=' ', strip=True)
+        return text
     else:
-        text = read_text_file(source)
-    
-    return clean_text(text)
+        raise Exception(f"Failed to retrieve webpage. Status code: {response.status_code}")
 
-# Example usage
-source = 'http://www.geom.uiuc.edu/~banchoff/Flatland/'  # or 'path/to/your/file.txt'
-cleaned_text = get_document_content(source)
-print(cleaned_text)
+def process_document(input_data):
+    """Process the input and extract clean text."""
+    # Check if the input is a URL or a file path
+    if input_data.startswith('http') or input_data.startswith('www'):
+        # If it's a URL, extract text from the webpage
+        return extract_text_from_webpage(input_data)
+    elif os.path.isfile(input_data):
+        # If it's a file path, extract text from the text file
+        return extract_text_from_file(input_data)
+    else:
+        raise ValueError("Invalid input. Please provide a valid URL or file path.")
+
+# Example usage:
+# You can provide a URL or file path to the `process_document` function
+document_input = "https://example.com"  # Replace with your URL or file path
+cleaned_text = process_document(document_input)
+
+# Print the cleaned text
+print(cleaned_text[:500])  # Print the first 500 characters for preview

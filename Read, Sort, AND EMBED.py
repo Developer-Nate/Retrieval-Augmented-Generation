@@ -1,6 +1,5 @@
-from sentence_transformers import SentenceTransformer
-import os
 import pickle
+from sentence_transformers import SentenceTransformer
 
 
 def split_into_chunks(file_path):

@@ -1,5 +1,6 @@
 from sentence_transformers import SentenceTransformer
 import os
+import pickle
 
 
 def split_into_chunks(file_path):
@@ -26,28 +27,28 @@ def generate_embeddings(chunks):
     return embeddings_dict
 
 
+def save_embeddings_to_file(embeddings_dict, filename):
+    """Save the embeddings dictionary to a file using pickle."""
+    with open(filename, 'wb') as file:
+        pickle.dump(embeddings_dict, file)
+    print(f"Embeddings saved to {filename}")
+
+
+def load_embeddings_from_file(filename):
+    """Load the embeddings dictionary from a pickle file."""
+    with open(filename, 'rb') as file:
+        return pickle.load(file)
+
+
 # Example usage
 file_path = "Flatland.txt"  # Path to your text file
 chunks = split_into_chunks(file_path)  # Split the file content into chunks
 embeddings_dict = generate_embeddings(chunks)  # Generate embeddings for the chunks
 
-# Print the embeddings of the first chunk as an example
-first_chunk = embeddings_dict.get(0)
-if first_chunk:
-    print("Text:", first_chunk['text'])
-    print("Embedding:", first_chunk['embedding'][:10])  # Print only the first 10 values of the embedding
-else:
-    print("No content found.")
+# Save the embeddings to a file
+output_file = "embeddings.pkl"  # File name where embeddings will be saved
+save_embeddings_to_file(embeddings_dict, output_file)
 
-# Example usage
-file_path = "Flatland.txt"  # Path to your text file
-chunks = split_into_chunks(file_path)
-embeddings_dict = generate_embeddings(chunks)
-
-# Print the embeddings of the first chunk as an example
-first_chunk = embeddings_dict.get(0)
-if first_chunk:
-    print("Text:", first_chunk['text'])
-    print("Embedding:", first_chunk['embedding'][:10])  # Print only the first 10 values of the embedding
-else:
-    print("No content found.")
+# If you need to load the embeddings from the saved file:
+# loaded_embeddings = load_embeddings_from_file(output_file)
+# print(loaded_embeddings.get(0))

@@ -28,6 +28,19 @@ def generate_embeddings(chunks):
 
 # Example usage
 file_path = "Flatland.txt"  # Path to your text file
+chunks = split_into_chunks(file_path)  # Split the file content into chunks
+embeddings_dict = generate_embeddings(chunks)  # Generate embeddings for the chunks
+
+# Print the embeddings of the first chunk as an example
+first_chunk = embeddings_dict.get(0)
+if first_chunk:
+    print("Text:", first_chunk['text'])
+    print("Embedding:", first_chunk['embedding'][:10])  # Print only the first 10 values of the embedding
+else:
+    print("No content found.")
+
+# Example usage
+file_path = "Flatland.txt"  # Path to your text file
 chunks = split_into_chunks(file_path)
 embeddings_dict = generate_embeddings(chunks)
 

@@ -43,3 +43,7 @@ Improvements or extensions: The system can be improved by generalizing the promp
     Generated Response:
     A romance of many dimensions
 
+    Enter your query: What is the nature of space in Flatlands?
+    
+    Generated Response:
+    clearer

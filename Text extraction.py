@@ -48,6 +48,6 @@ def get_document_content(source):
     return clean_text(text)
 
 # Example usage
-source = 'https://example.com'  # or 'path/to/your/file.txt'
+source = 'http://www.geom.uiuc.edu/~banchoff/Flatland/'  # or 'path/to/your/file.txt'
 cleaned_text = get_document_content(source)
 print(cleaned_text)
